@@ -11,7 +11,23 @@
   when you run `gulp`.
 */
 
-var requireDir = require('require-dir');
+const requireDir = require('require-dir');
+const gulp = require('gulp');
 
 // Require all tasks in gulp/tasks, including subfolders
-requireDir('./gulp/tasks', { recurse: true });
+const tasks = requireDir('./gulp/tasks', { recurse: true });
+
+// Define the browserify task
+gulp.task('browserify', tasks.browserify.browserify);
+
+// Define the default task
+exports.default = gulp.series(
+  tasks.clean.clean,
+  gulp.parallel(
+    tasks.less.less,
+    tasks.images.images,
+    tasks.markup.markup,
+    tasks.browserify.browserify
+  ),
+  tasks.watch.watch
+);

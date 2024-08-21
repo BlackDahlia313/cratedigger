@@ -1,15 +1,19 @@
-import THREE from 'three.js';
-import TWEEN from 'tween.js';
-import Stats from 'stats-js';
-import dat from 'dat-gui';
+import * as THREE from 'three';
+import TWEEN from '@tweenjs/tween.js';
+import Stats from 'stats.js';
+import * as dat from 'dat.gui';
 import Record from './record';
 import CameraManager from './cameraManager';
 import Constants from './constants';
 
-// import Modernizr from 'Modernizr'
-
-// VARIABLES
-const exports = {}; // Object for public APIs
+// Import Three.js modules
+import './threejs_modules/ShaderPass';
+import './threejs_modules/CopyShader';
+import './threejs_modules/RenderPass';
+import './threejs_modules/DoFShader';
+import './threejs_modules/FXAAShader';
+import './threejs_modules/MaskPass';
+import './threejs_modules/EffectComposer';
 
 // Three.js objects
 let stats;
@@ -37,7 +41,7 @@ let recordsDataList = [];
 let rootContainer;
 let cratesContainer;
 
-// States, util variabless
+// States, util variables
 let canvasWidth;
 let canvasHeight;
 let dpr;
@@ -62,15 +66,6 @@ let targetCameraPos = {
 
 // Materials
 let woodMaterial;
-
-// Inject all external modules to THREE.js
-require('./threejs_modules/ShaderPass')(THREE);
-require('./threejs_modules/CopyShader')(THREE);
-require('./threejs_modules/RenderPass')(THREE);
-require('./threejs_modules/DoFShader')(THREE);
-require('./threejs_modules/FXAAShader')(THREE);
-require('./threejs_modules/MaskPass')(THREE);
-require('./threejs_modules/EffectComposer')(THREE);
 
 // BASE METHODS
 function animate() {
@@ -1034,11 +1029,8 @@ function isFunction(obj) {
 
 // EXPORTS
 // Public Methods
-exports.init = function init(params) {
+export function init(params) {
   Constants.extend(params);
-
-  // feature test
-  // if (!Modernizr.webgl) return; TODO
 
   if (window.devicePixelRatio !== undefined) {
     dpr = window.devicePixelRatio;
@@ -1068,55 +1060,41 @@ exports.init = function init(params) {
 
   calculateCanvasSize();
   initScene();
-};
+}
 
-exports.startRender = function startRender() {
+export function startRender() {
   doRender = true;
   animate();
-};
+}
 
-exports.stopRender = function stopRender() {
+export function stopRender() {
   doRender = false;
-};
+}
 
-exports.enablePostprocessing = function enablePostprocessing() {
+export function enablePostprocessing() {
   Constants.postprocessing = true;
-};
+}
 
-exports.disablePostprocessing = function disablePostprocessing() {
+export function disablePostprocessing() {
   Constants.postprocessing = false;
-};
+}
 
 // Public getters
-exports.getCanvas = function getCanvas() {
+export function getCanvas() {
   return renderer.domElement;
-};
+}
 
-exports.getRecordsDataList = function getRecordsDataList() {
+export function getRecordsDataList() {
   return recordsDataList;
-};
+}
 
-exports.getLoadedRecords = function getLoadedRecords() {
+export function getLoadedRecords() {
   return loadedRecords;
-};
+}
 
-exports.getSelectedRecord = function getSelectedRecord() {
+export function getSelectedRecord() {
   return records[selectedRecord];
-};
+}
 
 // Methods accessors
-
-exports.loadRecords = loadRecords;
-exports.unloadRecords = unloadRecords;
-exports.resetShownRecord = resetShownRecord;
-exports.shuffleRecords = shuffleRecords;
-exports.flipSelectedRecord = flipSelectedRecord;
-exports.flipBackSelectedRecord = flipBackSelectedRecord;
-exports.selectRecord = selectRecord;
-exports.selectPrevRecord = selectPrevRecord;
-exports.selectNextRecord = selectNextRecord;
-exports.showLoading = showLoading;
-exports.hideLoading = hideLoading;
-
-// PUBLIC API
-export default exports;
+export { loadRecords, unloadRecords, resetShownRecord, shuffleRecords, flipSelectedRecord, flipBackSelectedRecord, selectRecord, selectPrevRecord, selectNextRecord, showLoading, hideLoading };

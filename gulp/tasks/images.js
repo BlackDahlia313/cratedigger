@@ -1,19 +1,17 @@
-var newer = require('gulp-newer');
-var gulp = require('gulp');
+const newer = require('gulp-newer');
+const gulp = require('gulp');
+const config = require('../config').images;
+const reload = require('../util/bs').reload;
 
-// var imagemin = require('gulp-imagemin');
-var config = require('../config').images;
-var reload = require('../util/bs').reload;
-
-gulp.task('images', function() {
+function images() {
   return gulp.src(config.src)
-
     // Ignore unchanged files
     .pipe(newer(config.dest))
-
-    // .pipe(imagemin())
+    // .pipe(imagemin()) // Uncomment if you want to use imagemin
     .pipe(gulp.dest(config.dest))
     .pipe(reload({
       stream: true,
     }));
-});
+}
+
+exports.images = images;

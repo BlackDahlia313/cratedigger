@@ -4,67 +4,56 @@
  * Depth of Field
  * - ported from
  */
-module.exports = function(THREE) {
-		
-	THREE.DoFShader = {
+import * as THREE from 'three';
 
-		uniforms: {
+const DoFShader = {
+    uniforms: {
+        "tDiffuse":     { type: "t", value: null },
+        "tDepth":       { type: "t", value: null },
+        "znear":        { type: "f", value: 1.0 },
+        "zfar":         { type: "f", value: 1000.0 },
+        "size":         { type: "v2", value: new THREE.Vector2( 512, 512 ) },
+        "textel":       { type: "v2", value: new THREE.Vector2( 1/512, 1/512)},
+        "focalDepth":   { type: "f", value: 200.0 },
+        "focalLength":  { type: "f", value: 28.0 },
+        "fstop":        { type: "f", value: 2.8 },
+        "showFocus":    { type: "i", value: 0 },
+        "manualdof":    { type: "i", value: 0 },
+        "ndofstart":    { type: "f", value: 1.0 },
+        "ndofdist":     { type: "f", value: 2.0 },
+        "fdofstart":    { type: "f", value: 1.0 },
+        "fdofdist":     { type: "f", value: 3.0 },
+        "CoC":          { type: "f", value: 0.03 },
+        "vignetting":   { type: "i", value: 1 },
+        "vignout":      { type: "f", value: 1.3 },
+        "vignin":       { type: "f", value: 0.0 },
+        "vignfade":     { type: "f", value: 22.0 },
+        "autofocus":    { type: "i", value: 1 },
+        "focus":        { type: "v2", value: new THREE.Vector2( 0.5, 0.5 ) },
+        "maxblur":      { type: "f", value: 1.0 },
+        "threshold":    { type: "f", value: 0.8 },
+        "gain":         { type: "f", value: 1.7 },
+        "bias":         { type: "f", value: 0.5 },
+        "fringe":       { type: "f", value: 0.7 },
+        "noise":        { type: "i", value: 1 },
+        "namount":      { type: "f", value: 0.0001 },
+        "depthblur":    { type: "i", value: 0 },
+        "dbsize":       { type: "f", value: 1.25}
+    },
 
-			"tDiffuse":     { type: "t", value: null },
-			"tDepth":       { type: "t", value: null },
-			"znear":		{ type: "f", value: 1.0 },
-			"zfar":			{ type: "f", value: 1000.0 },
-			"size":         { type: "v2", value: new THREE.Vector2( 512, 512 ) },
-			"textel":		{ type: "v2", value: new THREE.Vector2( 1/512, 1/512)},
-			"focalDepth":	{ type: "f", value: 200.0 },
-			"focalLength":	{ type: "f", value: 28.0 },
-			"fstop":		{ type: "f", value: 2.8 },
-			"showFocus":	{ type: "i", value: 0 },
-			"manualdof":	{ type: "i", value: 0 },
-			"ndofstart":	{ type: "f", value: 1.0 },
-			"ndofdist":		{ type: "f", value: 2.0 },
-			"fdofstart":	{ type: "f", value: 1.0 },
-			"fdofdist":		{ type: "f", value: 3.0 },
-			"CoC":			{ type: "f", value: 0.03 },
-			"vignetting":	{ type: "i", value: 1 },
-			"vignout":		{ type: "f", value: 1.3 },
-			"vignin":		{ type: "f", value: 0.0 },
-			"vignfade":		{ type: "f", value: 22.0 },
-			"autofocus":	{ type: "i", value: 1 },
-			"focus":        { type: "v2", value: new THREE.Vector2( 0.5, 0.5 ) },
-			"maxblur":		{ type: "f", value: 1.0 },
-			"threshold":	{ type: "f", value: 0.8 },
-			"gain":			{ type: "f", value: 1.7 },
-			"bias":			{ type: "f", value: 0.5 },
-			"fringe":		{ type: "f", value: 0.7 },
-			"noise":		{ type: "i", value: 1 },
-			"namount":		{ type: "f", value: 0.0001 },
-			"depthblur":	{ type: "i", value: 0 },
-			"dbsize":		{ type: "f", value: 1.25}
+    vertexShader: [
+        "varying vec2 vUv;",
+        "void main() {",
+            "vUv = uv;",
+            "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+        "}"
+    ].join("\n"),
 
-		},
-
-		vertexShader: [
-
-			"varying vec2 vUv;",
-
-			"void main() {",
-
-				"vUv = uv;",
-
-				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-
-			"}"
-
-		].join("\n"),
-
-		fragmentShader: [
-			"precision mediump float;",
-			"#define PI  3.14159265",
-
-			"varying vec2 vUv;",
-
-			//uniform variables from external script
+    fragmentShader: [
+        "precision mediump float;",
+        "#define PI  3.14159265",
+        "varying vec2 vUv;",
+        //uniform variables from external script
 
 			"uniform sampler2D tDiffuse;",
 			"uniform sampler2D tDepth;",
@@ -398,9 +387,9 @@ module.exports = function(THREE) {
 				"gl_FragColor.rgb = col;",
 				"gl_FragColor.a = 1.0;",
 			"}"
+    ].join("\n")
+};
 
-		].join("\n")
+THREE.DoFShader = DoFShader;
 
-	};
-
-}
+export { DoFShader };

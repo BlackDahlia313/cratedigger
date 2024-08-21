@@ -8,21 +8,21 @@
    See browserify.bundleConfigs in gulp/config.js
 */
 
-var browserify = require('browserify');
-var watchify = require('watchify');
-var bundleLogger = require('../util/bundleLogger');
-var gulp = require('gulp');
-var handleErrors = require('../util/handleErrors');
-var uglify = require('gulp-uglify');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var config = require('../config').browserify;
-var reload = require('../util/bs').reload;
-var _ = require('lodash');
-var sourcemaps = require('gulp-sourcemaps');
-var shim = require('browserify-shim');
+const browserify = require('browserify');
+const watchify = require('watchify');
+const bundleLogger = require('../util/bundleLogger');
+const gulp = require('gulp');
+const handleErrors = require('../util/handleErrors');
+const uglify = require('gulp-uglify');
+const source = require('vinyl-source-stream');
+const buffer = require('vinyl-buffer');
+const config = require('../config').browserify;
+const reload = require('../util/bs').reload;
+const _ = require('lodash');
+const sourcemaps = require('gulp-sourcemaps');
+const shim = require('browserify-shim');
 
-var browserifyTask = function(callback, devMode) {
+function browserifyTask(callback, devMode) {
   process.env.BROWSERIFYSWAP_ENV = 'prod';
 
   config.bundleConfigs.forEach(function external(bundle) {
@@ -38,22 +38,21 @@ var browserifyTask = function(callback, devMode) {
     config.bundleConfigs.push(config.pluginsBundleConfig);
   }
 
-  var bundleQueue = config.bundleConfigs.length;
+  let bundleQueue = config.bundleConfigs.length;
 
-  var browserifyThis = function(bundleConfig) {
-
+  const browserifyThis = function(bundleConfig) {
     if (devMode) {
       // Add watchify args
       _.extend(bundleConfig, watchify.args);
     }
 
-    var b = browserify(bundleConfig).transform(shim, {global: true});
+    let b = browserify(bundleConfig).transform(shim, {global: true});
 
-    var bundle = function() {
+    const bundle = function() {
       // Log when bundling starts
       bundleLogger.start(bundleConfig.outputName);
 
-      var preBundle = b.bundle()
+      let preBundle = b.bundle()
         .on('error', handleErrors)
         .pipe(source(bundleConfig.outputName))
         .pipe(buffer())
@@ -62,8 +61,7 @@ var browserifyTask = function(callback, devMode) {
         }));
 
       if (!devMode) {
-        preBundle
-        .pipe(uglify());
+        preBundle = preBundle.pipe(uglify());
       }
 
       return preBundle
@@ -99,7 +97,7 @@ var browserifyTask = function(callback, devMode) {
       });
     }
 
-    var reportFinished = function() {
+    const reportFinished = function() {
       // Log when bundling completes
       bundleLogger.end(bundleConfig.outputName);
 
@@ -118,8 +116,12 @@ var browserifyTask = function(callback, devMode) {
 
   // Start bundling with Browserify for each bundleConfig specified
   config.bundleConfigs.forEach(browserifyThis);
-};
+}
 
-gulp.task('browserify', ['lint-fail'], browserifyTask);
+function browserifyWithLint(callback) {
+  const { lintFail } = require('./lint');
+  return gulp.series(lintFail, (cb) => browserifyTask(cb, false))(callback);
+}
 
-module.exports = browserifyTask;
+exports.browserify = browserifyWithLint;
+exports.watchify = (callback) => browserifyTask(callback, true);

@@ -1,3 +1,8 @@
-var gulp = require('gulp');
+const gulp = require('gulp');
 
-gulp.task('test', ['karma']);
+function test(done) {
+  console.log('No tests configured. Add your test runner here.');
+  done();
+}
+
+exports.test = test;

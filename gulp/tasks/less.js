@@ -1,12 +1,11 @@
-var gulp         = require('gulp');
-var less         = require('gulp-less');
-var sourcemaps   = require('gulp-sourcemaps');
-var minifyCSS    = require('gulp-minify-css');
-var handleErrors = require('../util/handleErrors');
-var config       = require('../config').less;
-var stream       = require('../util/bs').stream;
-var autoprefixer = require('gulp-autoprefixer');
-var handleErrors = require('../util/handleErrors');
+const gulp = require('gulp');
+const less = require('gulp-less');
+const sourcemaps = require('gulp-sourcemaps');
+const cleanCSS = require('gulp-clean-css');
+const handleErrors = require('../util/handleErrors');
+const config = require('../config').less;
+const stream = require('../util/bs').stream;
+const autoprefixer = require('gulp-autoprefixer');
 
 function doLess() {
   return gulp.src(config.src)
@@ -14,10 +13,10 @@ function doLess() {
     .pipe(less(config.settings))
     .on('error', handleErrors)
     .pipe(autoprefixer(config.autoprefixer))
-    .pipe(minifyCSS())
+    .pipe(cleanCSS())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(config.dest))
     .pipe(stream({match: '**/*.css'}));
-};
+}
 
-gulp.task('less', doLess);
+exports.less = doLess;

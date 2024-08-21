@@ -1,13 +1,13 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var newer = require('gulp-newer');
-var sourcemaps = require('gulp-sourcemaps');
-var uglify = require('gulp-uglify');
-var minifyCSS = require('gulp-minify-css');
-var configJs = require('../config').vendorJs;
-var configCss = require('../config').vendorCss;
+const gulp = require('gulp');
+const concat = require('gulp-concat');
+const newer = require('gulp-newer');
+const sourcemaps = require('gulp-sourcemaps');
+const uglify = require('gulp-uglify');
+const cleanCSS = require('gulp-clean-css');
+const configJs = require('../config').vendorJs;
+const configCss = require('../config').vendorCss;
 
-gulp.task('vendorJs', ['browserify'], function() {
+function vendorJs() {
   return gulp.src(configJs.src)
     .pipe(newer(configJs.dest + '/' + configJs.outputName))
     .pipe(sourcemaps.init({
@@ -17,16 +17,18 @@ gulp.task('vendorJs', ['browserify'], function() {
     .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(configJs.dest));
-});
+}
 
-gulp.task('vendorCss', function() {
+function vendorCss() {
   return gulp.src(configCss.src)
     .pipe(newer(configCss.dest + '/' + configCss.outputName))
     .pipe(sourcemaps.init())
     .pipe(concat(configCss.outputName))
-    .pipe(minifyCSS())
+    .pipe(cleanCSS())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(configCss.dest));
-});
+}
 
-gulp.task('vendor', ['vendorJs', 'vendorCss']);
+exports.vendorJs = vendorJs;
+exports.vendorCss = vendorCss;
+exports.vendor = gulp.parallel(vendorJs, vendorCss);

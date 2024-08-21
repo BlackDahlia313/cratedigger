@@ -1,5 +1,5 @@
-import THREE from 'three.js';
-import TWEEN from 'tween.js';
+import * as THREE from 'three';
+import TWEEN from '@tweenjs/tween.js';
 
 import Constants from './constants';
 import CameraManager from './cameraManager';

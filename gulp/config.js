@@ -62,7 +62,6 @@ module.exports = {
     // List here all external libs
     libs: [
       'debug',
-      'three.js',
       'source-map-support/register',
     ],
 

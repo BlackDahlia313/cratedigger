@@ -1,8 +1,8 @@
-var gulp = require('gulp');
-var jscs = require('gulp-jscs');
-var eslint = require('gulp-eslint');
-var handleErrors = require('../util/handleErrors');
-var config = require('../config').lint;
+const gulp = require('gulp');
+const jscs = require('gulp-jscs');
+const eslint = require('gulp-eslint');
+const handleErrors = require('../util/handleErrors');
+const config = require('../config').lint;
 
 function doLint() {
   return gulp.src(config.js.src)
@@ -12,8 +12,9 @@ function doLint() {
     .pipe(eslint.format());
 }
 
-gulp.task('lint', doLint);
-
-gulp.task('lint-fail', function lintFail() {
+function lintFail() {
   return doLint().pipe(eslint.failOnError());
-});
+}
+
+exports.lint = doLint;
+exports.lintFail = lintFail;

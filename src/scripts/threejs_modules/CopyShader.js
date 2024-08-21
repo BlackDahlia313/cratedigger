@@ -3,46 +3,37 @@
  *
  * Full-screen textured quad shader
  */
-module.exports = function(THREE) {
-	
-	THREE.CopyShader = {
+import * as THREE from 'three';
 
-		uniforms: {
+const CopyShader = {
+    uniforms: {
+        "tDiffuse": { type: "t", value: null },
+        "opacity": { type: "f", value: 1.0 }
+    },
 
-			"tDiffuse": { type: "t", value: null },
-			"opacity":  { type: "f", value: 1.0 }
+    vertexShader: [
+        "varying vec2 vUv;",
 
-		},
+        "void main() {",
+            "vUv = uv;",
+            "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+        "}"
+    ].join("\n"),
 
-		vertexShader: [
+    fragmentShader: [
+        "uniform float opacity;",
 
-			"varying vec2 vUv;",
+        "uniform sampler2D tDiffuse;",
 
-			"void main() {",
+        "varying vec2 vUv;",
 
-				"vUv = uv;",
-				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-
-			"}"
-
-		].join("\n"),
-
-		fragmentShader: [
-
-			"uniform float opacity;",
-
-			"uniform sampler2D tDiffuse;",
-
-			"varying vec2 vUv;",
-
-			"void main() {",
-
-				"vec4 texel = texture2D( tDiffuse, vUv );",
-				"gl_FragColor = opacity * texel;",
-
-			"}"
-
-		].join("\n")
-
-	};
+        "void main() {",
+            "vec4 texel = texture2D( tDiffuse, vUv );",
+            "gl_FragColor = opacity * texel;",
+        "}"
+    ].join("\n")
 };
+
+THREE.CopyShader = CopyShader;
+
+export { CopyShader };

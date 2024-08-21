@@ -1,10 +1,12 @@
-var gulp = require('gulp');
-var del = require('del');
-var vinylPaths = require('vinyl-paths');
-var config = require('../config').production;
+const gulp = require('gulp');
+const del = require('del');
+const vinylPaths = require('vinyl-paths');
+const config = require('../config').production;
 
-gulp.task('production', ['build'], function() {
+function production() {
   return gulp.src(config.src)
-      .pipe(vinylPaths(del))
-      .pipe(gulp.dest(config.dest));
-});
+    .pipe(vinylPaths(del))
+    .pipe(gulp.dest(config.dest));
+}
+
+exports.production = production;

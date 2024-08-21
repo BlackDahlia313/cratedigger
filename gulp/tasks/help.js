@@ -1,10 +1,14 @@
-var gulp = require('gulp');
-var taskListing = require('gulp-task-listing');
+const gulp = require('gulp');
 
-gulp.task('help', taskListing.withFilters(function(task) {
-  return task !== 'build' &&
-    task !== 'default' &&
-    task !== 'help' &&
-    task !== 'production' &&
-    task !== 'test';
-}));
+gulp.task('help', (done) => {
+  const tasksToExclude = ['build', 'default', 'help', 'production', 'test'];
+  const taskNames = Object.keys(gulp.registry().tasks())
+    .filter(taskName => !tasksToExclude.includes(taskName));
+
+  console.log('Available tasks:');
+  taskNames.forEach(taskName => {
+    console.log(`- ${taskName}`);
+  });
+  
+  done();
+});

@@ -1,9 +1,11 @@
-var gulp = require('gulp');
-var del = require('del');
-var vinylPaths = require('vinyl-paths');
-var config = require('../config').clean;
+const gulp = require('gulp');
+const del = require('del');
+const vinylPaths = require('vinyl-paths');
+const config = require('../config').clean;
 
-gulp.task('clean', function() {
-  return gulp.src(config.src)
-      .pipe(vinylPaths(del));
-});
+function clean() {
+  return gulp.src(config.src, { allowEmpty: true })
+    .pipe(vinylPaths(del));
+}
+
+exports.clean = clean;
